@@ -1,7 +1,8 @@
 import http from 'http';
 import fs from 'fs';
 import axios from 'axios';
-import { default as CacheableLookup } from 'cacheable-lookup/source';
+import CacheableLookup from 'cacheable-lookup';
+import jsonData from './propertyphoto.json'
 
 // Increase the number of max sockets to that thread
 http.globalAgent.maxSockets = 100;
@@ -11,8 +12,6 @@ const cacheable = new CacheableLookup();
 
 // Install cacheable-lookup on the global agent
 cacheable.install(http.globalAgent);
-
-const jsonData = require('./propertyphoto.json');
 
 // Download a bunch of images using stream and parallel 
 async function downloadImages(jsonData) {
