@@ -1,24 +1,40 @@
-const http = require('http')
-const fs = require('fs')
-const axios = require('axios')
-// increase the num of max sockets to that thread
-http.globalAgent.maxSockets = 100
+const http = require('http');
+const fs = require('fs');
+const axios = require('axios');
+const CacheableLookup = require('cacheable-lookup');
 
-const jsonData = require('./propertyphoto.json')
+// Increase the number of max sockets to that thread
+http.globalAgent.maxSockets = 100;
 
-// download a bunch of images using stream and parallel 
+// Create a new instance of CacheableLookup
+const cacheable = new CacheableLookup();
+
+// Install cacheable-lookup on the global agent
+cacheable.install(http.globalAgent);
+
+const jsonData = require('./propertyphoto.json');
+
+// Download a bunch of images using stream and parallel 
 async function downloadImages(jsonData) {
   const downloadPromises = jsonData.map(async (item) => {
+    const downloading = 0;
     const imageURL = item.url;
     const imageKey = item.image_key;
-    const parentId = item["_parent._id"]
+    const parentId = item['_parent._id'];
     const imageFileName = `image_key=${imageKey}_parentId=${parentId}.jpg`; // Adjust the file name as per your requirement
+    console.log(`Downloading ${++downloading}`);
 
-    const writer = fs.createWriteStream(imageFileName);
+    // Create a folder to store the downloaded images
+    if (!fs.existsSync('images')) {
+      fs.mkdirSync('images');
+    }
+
+    const writer = fs.createWriteStream(`images/${imageFileName}`);
     const response = await axios({
       url: imageURL,
       method: 'GET',
       responseType: 'stream',
+      lookup: cacheable.lookup, // Use cacheable-lookup for DNS lookup
     });
 
     response.data.pipe(writer);
