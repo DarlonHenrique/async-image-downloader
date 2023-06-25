@@ -1,5 +1,6 @@
 const http = require('http')
 const fs = require('fs')
+const axios = require('axios')
 // increase the num of max sockets to that thread
 http.globalAgent.maxSockets = 100
 
