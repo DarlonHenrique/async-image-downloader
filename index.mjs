@@ -1,7 +1,7 @@
-const http = require('http');
-const fs = require('fs');
-const axios = require('axios');
-const CacheableLookup = require('cacheable-lookup');
+import http from 'http';
+import fs from 'fs';
+import axios from 'axios';
+import { default as CacheableLookup } from 'cacheable-lookup/source';
 
 // Increase the number of max sockets to that thread
 http.globalAgent.maxSockets = 100;
